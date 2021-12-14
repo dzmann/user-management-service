@@ -1,9 +1,12 @@
 server:
   port: 8084
 
-jasypt:
-  encryptor:
-    algorithm: PBEWithMD5AndDES
+keycloak:
+  auth-server-url: http://localhost:8080/auth
+  realm: agencia
+  resource: user-management-service
+  public-client: true
+  bearer-only: true
 
 custom:
   keycloak:
