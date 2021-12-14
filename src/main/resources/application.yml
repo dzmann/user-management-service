@@ -1,0 +1,17 @@
+server:
+  port: 8084
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+
+custom:
+  keycloak:
+    rest:
+      client:
+        server-url: "http://localhost:8080/auth/"
+        realm: "agencia"
+        clientId: "agencia"
+        clientSecret: ENC(ipX7VKf4SSffzKLnpUS2E1PBABr0Wz1S2k110Pjweqb+09rq3BBKwmOceFaxKeu6)
+
+
