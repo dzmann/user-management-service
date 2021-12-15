@@ -1,7 +1,7 @@
 package com.example.usermanagementservice.controller;
 
 import com.example.usermanagementservice.dto.UserDto;
-import org.dozer.DozerBeanMapper;
+import com.example.usermanagementservice.service.KeycloakService;
 import org.dozer.Mapper;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,9 @@ public class UserController {
     @Autowired
     private Mapper mapper;
 
+    @Autowired
+    private KeycloakService keycloakService;
+
     @GetMapping
     public String testController() {
         return "accediste";
@@ -25,7 +28,8 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity createUser(@Valid @RequestBody UserDto userDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(userDto, UserRepresentation.class));
+        UserRepresentation createdUser = keycloakService.createNewUser(mapper.map(userDto, UserRepresentation.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(createdUser, UserDto.class));
     }
 
 }

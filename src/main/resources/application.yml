@@ -16,9 +16,10 @@ custom:
   keycloak:
     rest:
       client:
-        server-url: "http://localhost:8080/auth/"
+        serverUrl: "http://localhost:8080/auth/"
         realm: "agencia"
         clientId: "agencia"
-        clientSecret: ENC(ipX7VKf4SSffzKLnpUS2E1PBABr0Wz1S2k110Pjweqb+09rq3BBKwmOceFaxKeu6)
+        clientSecret: ENC(OD0y+37hS1tUfCoH+iQqbMIM/gSItAO9RPwHbK1gRQr9WXb4mDppw245nhanvYDSMgz6Tb0MTKEaNplyaz4FbbJUhmn/WsbAVzVL7sePIiI=)
+
 
 
