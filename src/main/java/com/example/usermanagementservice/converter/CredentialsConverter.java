@@ -17,12 +17,10 @@ public class CredentialsConverter implements CustomConverter {
         return null;
     }
 
-
     private List<CredentialRepresentation> getCredentialRepresentationList(String password) {
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setValue(password);
         return Arrays.asList(credentialRepresentation);
     }
-
 
 }
