@@ -7,8 +7,11 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @RestController
@@ -22,12 +25,15 @@ public class UserController {
     private KeycloakService keycloakService;
 
     @GetMapping
+    @RolesAllowed({"admin", "user"})
     public String testController() {
         return "accediste";
     }
 
     @PostMapping
+    @RolesAllowed({"admin"})
     public ResponseEntity createUser(@Valid @RequestBody UserDto userDto) {
+        SecurityContext securityContextHolder =  SecurityContextHolder.getContext();
         UserRepresentation createdUser = keycloakService.createNewUser(mapper.map(userDto, UserRepresentation.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(createdUser, UserDto.class));
     }

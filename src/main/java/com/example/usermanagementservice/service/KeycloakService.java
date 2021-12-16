@@ -1,5 +1,6 @@
 package com.example.usermanagementservice.service;
 
+import com.example.usermanagementservice.exception.UserManagementException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -9,7 +10,6 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,6 @@ import java.util.Arrays;
 @Slf4j
 public class KeycloakService {
 
-    @Qualifier("fooFormatter")
     private final RealmResource agenciaRealmResource;
 
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
@@ -34,8 +33,10 @@ public class KeycloakService {
             finishUserCreation(usersResource, userId, userRepresentation);
             return agenciaRealmResource.users().get(userId).toRepresentation();
         }
-        log.error(String.format("API response HttpStatus %s", response.getStatus()));
-        throw new RuntimeException("An error ocurred while creating user");
+
+        String responseBody = response.readEntity(String.class);
+        log.error(String.format("API response was: %s with status code %s", responseBody, response.getStatus()));
+        throw new UserManagementException(responseBody, response.getStatus());
     }
 
     private void finishUserCreation(UsersResource userResource, String userId, UserRepresentation userRepresentation) {
@@ -52,9 +53,13 @@ public class KeycloakService {
     }
 
     private void addRole(UserResource userResource) {
-        RoleRepresentation userRole = agenciaRealmResource.roles()
-                .get("user").toRepresentation();
-        userResource.roles().realmLevel() //
+        RoleRepresentation userRole = agenciaRealmResource
+                .roles()
+                .get("user")
+                .toRepresentation();
+        userResource
+                .roles()
+                .realmLevel()
                 .add(Arrays.asList(userRole));
     }
 

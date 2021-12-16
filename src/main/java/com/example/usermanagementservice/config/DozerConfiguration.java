@@ -1,7 +1,5 @@
 package com.example.usermanagementservice.config;
 
-import com.example.usermanagementservice.converter.CredentialsConverter;
-import org.dozer.CustomConverter;
 import org.dozer.DozerBeanMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

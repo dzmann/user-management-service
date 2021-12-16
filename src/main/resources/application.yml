@@ -2,15 +2,14 @@ server:
   port: 8084
 
 keycloak:
-  auth-server-url: "http://localhost:8080/auth"
+  auth-server-url: http://localhost:8080/auth
   realm: agencia
   resource: user-management-service
-  public-client: false
-  use-resource-role-mappings: true
-  enabled: true
+  public-client: true
   credentials:
     secret: ENC(fvHsTFCqrBi/TtzTi+mwfQNoagMm1YZDNR/TflDZD2bac0+P6IXjY/TQyDGK67GEG0Uixh0Qm34Pye3TF2ebyT+rjRbvlv3VLQCVPHjC7TY=)
   bearer-only: true
+
 
 custom:
   keycloak:
@@ -20,6 +19,8 @@ custom:
         realm: "agencia"
         clientId: "agencia"
         clientSecret: ENC(OD0y+37hS1tUfCoH+iQqbMIM/gSItAO9RPwHbK1gRQr9WXb4mDppw245nhanvYDSMgz6Tb0MTKEaNplyaz4FbbJUhmn/WsbAVzVL7sePIiI=)
+        userName: "danilo"
+        password: ENC(H34eUlb4izUbQ9Wf30FKQ1Po4AhNhVKPcahQ4abySstBZ72O4wnt/NRAXF6JwAyu)
 
 
 

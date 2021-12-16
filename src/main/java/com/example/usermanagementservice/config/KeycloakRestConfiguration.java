@@ -20,6 +20,8 @@ public class KeycloakRestConfiguration {
     private String realm;
     private String clientId;
     private String clientSecret;
+    private String userName;
+    private String password;
 
     @Bean("agenciaRealmResource")
     public RealmResource realmResource() {
@@ -29,8 +31,8 @@ public class KeycloakRestConfiguration {
                 .grantType(OAuth2Constants.PASSWORD) //
                 .clientId(clientId) //
                 .clientSecret(clientSecret)
-                .username("danilo")
-                .password("trinker")
+                .username(userName)
+                .password(password)
                 .build();
         keycloak.tokenManager().getAccessToken();
 

@@ -11,7 +11,7 @@ public class CredentialsConverter implements CustomConverter {
     @Override
     public Object convert(Object o, Object o1, Class<?> aClass, Class<?> aClass1) {
         if(o == null) {
-            String password = (String) o1;
+            final String password = (String) o1;
             return getCredentialRepresentationList(password);
         }
         return null;
