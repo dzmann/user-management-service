@@ -10,7 +10,7 @@ public class CredentialsConverter implements CustomConverter {
 
     @Override
     public Object convert(Object o, Object o1, Class<?> aClass, Class<?> aClass1) {
-        if(o == null) {
+        if (o == null) {
             final String password = (String) o1;
             return getCredentialRepresentationList(password);
         }
@@ -23,7 +23,6 @@ public class CredentialsConverter implements CustomConverter {
         credentialRepresentation.setValue(password);
         return Arrays.asList(credentialRepresentation);
     }
-
 
 
 }

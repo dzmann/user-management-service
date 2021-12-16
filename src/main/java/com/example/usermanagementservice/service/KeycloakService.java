@@ -28,7 +28,7 @@ public class KeycloakService {
         fillWithData(userRepresentation);
         Response response = usersResource.create(userRepresentation);
 
-        if(response.getStatus() == HttpStatus.CREATED.value()) {
+        if (response.getStatus() == HttpStatus.CREATED.value()) {
             String userId = CreatedResponseUtil.getCreatedId(response);
             finishUserCreation(usersResource, userId, userRepresentation);
             return agenciaRealmResource.users().get(userId).toRepresentation();
@@ -42,6 +42,7 @@ public class KeycloakService {
     private void finishUserCreation(UsersResource userResource, String userId, UserRepresentation userRepresentation) {
         UserResource savedUser = userResource.get(userId);
         savedUser.resetPassword(getCredentials(userRepresentation.getCredentials().get(0).getValue()));
+        addRole(savedUser);
     }
 
     private CredentialRepresentation getCredentials(String password) {

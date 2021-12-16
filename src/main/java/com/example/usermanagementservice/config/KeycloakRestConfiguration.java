@@ -25,17 +25,16 @@ public class KeycloakRestConfiguration {
 
     @Bean("agenciaRealmResource")
     public RealmResource realmResource() {
-        Keycloak keycloak = KeycloakBuilder.builder() //
-                .serverUrl(serverUrl) //
-                .realm(realm) //
-                .grantType(OAuth2Constants.PASSWORD) //
-                .clientId(clientId) //
+        Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(serverUrl)
+                .realm(realm)
+                .grantType(OAuth2Constants.PASSWORD)
+                .clientId(clientId)
                 .clientSecret(clientSecret)
                 .username(userName)
                 .password(password)
                 .build();
         keycloak.tokenManager().getAccessToken();
-
         return keycloak.realm(realm);
     }
 

@@ -24,16 +24,10 @@ public class UserController {
     @Autowired
     private KeycloakService keycloakService;
 
-    @GetMapping
-    @RolesAllowed({"admin", "user"})
-    public String testController() {
-        return "accediste";
-    }
-
     @PostMapping
     @RolesAllowed({"admin"})
     public ResponseEntity createUser(@Valid @RequestBody UserDto userDto) {
-        SecurityContext securityContextHolder =  SecurityContextHolder.getContext();
+        SecurityContext securityContextHolder = SecurityContextHolder.getContext();
         UserRepresentation createdUser = keycloakService.createNewUser(mapper.map(userDto, UserRepresentation.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(createdUser, UserDto.class));
     }
