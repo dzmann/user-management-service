@@ -14,8 +14,8 @@ public class UserManagementExceptionHandler extends ResponseEntityExceptionHandl
 
     @ExceptionHandler(UserManagementException.class)
     protected ResponseEntity<Object> handleError(UserManagementException userManagementException) {
-        final String body = userManagementException.getMessage();
-        final HttpStatus httpStatus = HttpStatus.valueOf(userManagementException.getStatusCode());
+        final ErrorResponse body = userManagementException.getErrorResponse();
+        final HttpStatus httpStatus = userManagementException.getStatusCode();
         return new ResponseEntity(body, httpStatus);
     }
 

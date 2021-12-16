@@ -1,6 +1,7 @@
 package com.example.usermanagementservice.service;
 
 import com.example.usermanagementservice.exception.UserManagementException;
+import com.example.usermanagementservice.helper.KeycloakClientHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -10,6 +11,7 @@ import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -17,26 +19,28 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 
 @Component
-@AllArgsConstructor
 @Slf4j
+@AllArgsConstructor
 public class KeycloakService {
 
-    private final RealmResource agenciaRealmResource;
+    @Autowired
+    private KeycloakClientHelper keycloakClientHelper;
 
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
-        UsersResource usersResource = agenciaRealmResource.users();
+        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        UsersResource usersResource = realmResource.users();
         fillWithData(userRepresentation);
         Response response = usersResource.create(userRepresentation);
 
         if (response.getStatus() == HttpStatus.CREATED.value()) {
             String userId = CreatedResponseUtil.getCreatedId(response);
             finishUserCreation(usersResource, userId, userRepresentation);
-            return agenciaRealmResource.users().get(userId).toRepresentation();
+            return realmResource.users().get(userId).toRepresentation();
         }
 
         String responseBody = response.readEntity(String.class);
         log.error(String.format("API response was: %s with status code %s", responseBody, response.getStatus()));
-        throw new UserManagementException(responseBody, response.getStatus());
+        throw new UserManagementException(responseBody, HttpStatus.valueOf(response.getStatus()));
     }
 
     private void finishUserCreation(UsersResource userResource, String userId, UserRepresentation userRepresentation) {
@@ -54,7 +58,7 @@ public class KeycloakService {
     }
 
     private void addRole(UserResource userResource) {
-        RoleRepresentation userRole = agenciaRealmResource
+        RoleRepresentation userRole = keycloakClientHelper.getRealmResource()
                 .roles()
                 .get("user")
                 .toRepresentation();
