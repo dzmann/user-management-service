@@ -1,5 +1,6 @@
 package com.example.usermanagementservice.service;
 
+import com.example.usermanagementservice.exception.ErrorResponse;
 import com.example.usermanagementservice.exception.UserManagementException;
 import com.example.usermanagementservice.helper.KeycloakClientHelper;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class KeycloakService {
             return realmResource.users().get(userId).toRepresentation();
         }
 
-        String responseBody = response.readEntity(String.class);
+        ErrorResponse responseBody = response.readEntity(ErrorResponse.class);
         log.error(String.format("API response was: %s with status code %s", responseBody, response.getStatus()));
         throw new UserManagementException(responseBody, HttpStatus.valueOf(response.getStatus()));
     }
