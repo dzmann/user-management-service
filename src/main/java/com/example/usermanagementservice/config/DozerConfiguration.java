@@ -19,4 +19,5 @@ public class DozerConfiguration {
         dozerBean.setMappingFiles(mappingFiles);
         return dozerBean;
     }
+
 }
