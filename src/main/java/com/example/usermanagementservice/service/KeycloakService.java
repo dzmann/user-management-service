@@ -1,14 +1,17 @@
 package com.example.usermanagementservice.service;
 
+import com.example.usermanagementservice.dto.LoginDto;
 import com.example.usermanagementservice.exception.ErrorResponse;
 import com.example.usermanagementservice.exception.UserManagementException;
 import com.example.usermanagementservice.helper.KeycloakClientHelper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
+import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -26,6 +29,11 @@ public class KeycloakService {
 
     @Autowired
     private KeycloakClientHelper keycloakClientHelper;
+
+    public AccessTokenResponse login(LoginDto loginDto) {
+        Keycloak keycloak = keycloakClientHelper.getClient(loginDto.getUserName(), loginDto.getPassword());
+        return keycloak.tokenManager().getAccessToken();
+    }
 
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
         RealmResource realmResource = keycloakClientHelper.getRealmResource();
