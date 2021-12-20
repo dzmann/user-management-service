@@ -30,7 +30,7 @@ public class KeycloakService {
     @Autowired
     private KeycloakClientHelper keycloakClientHelper;
 
-    public AccessTokenResponse login(LoginDto loginDto) {
+    public AccessTokenResponse getAccessToken(LoginDto loginDto) {
         Keycloak keycloak = keycloakClientHelper.getClient(loginDto.getUserName(), loginDto.getPassword());
         return keycloak.tokenManager().getAccessToken();
     }

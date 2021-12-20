@@ -30,12 +30,11 @@ public class UserController {
     private KeycloakService keycloakService;
 
     @PostMapping(value = "/login")
-    @RolesAllowed({"admin", "user"})
     public AccessTokenResponse login(@Valid @RequestBody LoginDto loginDto) {
-        return keycloakService.login(loginDto);
+        return keycloakService.getAccessToken(loginDto);
     }
 
-    @PostMapping
+    @PostMapping(value = "/create")
     @RolesAllowed({"admin"})
     public ResponseEntity createUser(@Valid @RequestBody UserDto userDto) {
         SecurityContext securityContextHolder = SecurityContextHolder.getContext();
