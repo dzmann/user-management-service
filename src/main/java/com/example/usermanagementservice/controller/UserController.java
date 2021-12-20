@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
@@ -34,12 +31,23 @@ public class UserController {
         return keycloakService.getAccessToken(loginDto);
     }
 
+    @GetMapping(value = "{username}")
+    @RolesAllowed({"admin", "user"})
+    public UserDto getByUsername(@PathVariable(value = "username") String username) {
+        return mapper.map(keycloakService.findById(username), UserDto.class);
+    }
+
     @PostMapping(value = "/create")
     @RolesAllowed({"admin"})
     public ResponseEntity createUser(@Valid @RequestBody UserDto userDto) {
-        SecurityContext securityContextHolder = SecurityContextHolder.getContext();
         UserRepresentation createdUser = keycloakService.createNewUser(mapper.map(userDto, UserRepresentation.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(createdUser, UserDto.class));
+    }
+
+    @DeleteMapping(value = "{username}")
+    @RolesAllowed({"admin"})
+    public void deleteByUsername(@PathVariable(value = "username") String username) {
+        keycloakService.deleteUser(username);
     }
 
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -30,9 +31,13 @@ public class KeycloakService {
     @Autowired
     private KeycloakClientHelper keycloakClientHelper;
 
-    public AccessTokenResponse getAccessToken(LoginDto loginDto) {
-        Keycloak keycloak = keycloakClientHelper.getClient(loginDto.getUserName(), loginDto.getPassword());
-        return keycloak.tokenManager().getAccessToken();
+    public UserRepresentation findById(String username) {
+        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        List<UserRepresentation> found = realmResource.users().search(username);
+        if(found.isEmpty()) {
+            throw new UserManagementException("User not found", HttpStatus.NOT_FOUND);
+        }
+        return found.get(0);
     }
 
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
@@ -50,6 +55,17 @@ public class KeycloakService {
         ErrorResponse responseBody = response.readEntity(ErrorResponse.class);
         log.error(String.format("API response was: %s with status code %s", responseBody, response.getStatus()));
         throw new UserManagementException(responseBody, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    public void deleteUser(String username) {
+        UserRepresentation userRepresentation = findById(username);
+        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        realmResource.users().delete(userRepresentation.getId());
+    }
+
+    public AccessTokenResponse getAccessToken(LoginDto loginDto) {
+        Keycloak keycloak = keycloakClientHelper.getClient(loginDto.getUserName(), loginDto.getPassword());
+        return keycloak.tokenManager().getAccessToken();
     }
 
     private void finishUserCreation(UsersResource userResource, String userId, UserRepresentation userRepresentation) {
