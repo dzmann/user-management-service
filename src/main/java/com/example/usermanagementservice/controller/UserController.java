@@ -29,10 +29,16 @@ public class UserController {
         return keycloakService.getAccessToken(loginDto);
     }
 
-    @GetMapping(value = "{username}")
+    @GetMapping(value = "/username/{username}")
     @RolesAllowed({"admin", "user"})
     public UserDto getByUsername(@PathVariable(value = "username") String username) {
-        return mapper.map(keycloakService.findById(username), UserDto.class);
+        return mapper.map(keycloakService.findByUsername(username), UserDto.class);
+    }
+
+    @GetMapping(value = "{id}")
+    @RolesAllowed({"admin", "user"})
+    public UserDto getById(@PathVariable(value = "id") String id) {
+        return mapper.map(keycloakService.findById(id), UserDto.class);
     }
 
     @PostMapping(value = "/create")
@@ -42,10 +48,17 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.map(createdUser, UserDto.class));
     }
 
-    @DeleteMapping(value = "{username}")
+    @PutMapping(value = "{id}")
+    @RolesAllowed({"admin", "user"})
+    public ResponseEntity updateUser(@Valid @RequestBody UserDto userDto, @PathVariable(value = "id") String id) {
+        UserRepresentation updatedUser = keycloakService.updateUser(mapper.map(userDto, UserRepresentation.class), id);
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.map(updatedUser, UserDto.class));
+    }
+
+    @DeleteMapping(value = "{id}")
     @RolesAllowed({"admin"})
-    public void deleteByUsername(@PathVariable(value = "username") String username) {
-        keycloakService.deleteUser(username);
+    public void delete(@PathVariable(value = "id") String id) {
+        keycloakService.deleteUser(id);
     }
 
 }

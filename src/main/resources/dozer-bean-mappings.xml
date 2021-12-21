@@ -8,6 +8,10 @@
         <class-a>org.keycloak.representations.idm.UserRepresentation</class-a>
         <class-b>com.example.usermanagementservice.dto.UserDto</class-b>
         <field>
+            <a>id</a>
+            <b>id</b>
+        </field>
+        <field>
             <a>username</a>
             <b>username</b>
         </field>
@@ -26,6 +30,11 @@
         <field custom-converter="com.example.usermanagementservice.converter.CredentialsConverter">
             <a>credentials</a>
             <b>password</b>
+        </field>
+        <field custom-converter="com.example.usermanagementservice.converter.DetailsConverter">
+            <a>attributes</a>
+            <b>details</b>
+            <a-hint>java.util.HashMap</a-hint>
         </field>
     </mapping>
 </mappings>

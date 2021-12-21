@@ -8,9 +8,13 @@ public interface KeycloakService {
 
     UserRepresentation createNewUser(UserRepresentation userRepresentation);
 
-    UserRepresentation findById(String username);
+    UserRepresentation updateUser(UserRepresentation userRepresentation, String id);
 
-    void deleteUser(String username);
+    UserRepresentation findByUsername(String username);
+
+    UserRepresentation findById(String id);
+
+    void deleteUser(String id);
 
     AccessTokenResponse getAccessToken(LoginDto loginDto);
 

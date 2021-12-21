@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessTokenResponse;
@@ -32,25 +31,30 @@ public class KeycloakServiceImpl implements KeycloakService {
     @Autowired
     private KeycloakClient keycloakClient;
 
-    public UserRepresentation findById(String username) {
-        RealmResource realmResource = keycloakClient.getRealmResource();
-        List<UserRepresentation> found = realmResource.users().search(username);
+    @Override
+    public UserRepresentation findByUsername(String username) {
+        List<UserRepresentation> found = keycloakClient.getUsersResource().search(username);
         if(found.isEmpty()) {
             throw new UserManagementException("User not found", HttpStatus.NOT_FOUND);
         }
         return found.get(0);
     }
 
+    @Override
+    public UserRepresentation findById(String id) {
+        return keycloakClient.getUsersResource().get(id).toRepresentation();
+    }
+
+    @Override
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
-        RealmResource realmResource = keycloakClient.getRealmResource();
-        UsersResource usersResource = realmResource.users();
+        UsersResource usersResource = keycloakClient.getUsersResource();
         fillWithData(userRepresentation);
         Response response = usersResource.create(userRepresentation);
 
         if (response.getStatus() == HttpStatus.CREATED.value()) {
             String userId = CreatedResponseUtil.getCreatedId(response);
             finishUserCreation(usersResource, userId, userRepresentation);
-            return realmResource.users().get(userId).toRepresentation();
+            return usersResource.get(userId).toRepresentation();
         }
 
         ErrorResponse responseBody = response.readEntity(ErrorResponse.class);
@@ -58,12 +62,20 @@ public class KeycloakServiceImpl implements KeycloakService {
         throw new UserManagementException(responseBody, HttpStatus.valueOf(response.getStatus()));
     }
 
-    public void deleteUser(String username) {
-        UserRepresentation userRepresentation = findById(username);
-        RealmResource realmResource = keycloakClient.getRealmResource();
-        realmResource.users().delete(userRepresentation.getId());
+    @Override
+    public UserRepresentation updateUser(UserRepresentation userRepresentation, String id) {
+        UsersResource usersResource = keycloakClient.getUsersResource();
+        UserResource userResource = usersResource.get(id);
+        userResource.update(userRepresentation);
+        return findById(id);
     }
 
+    @Override
+    public void deleteUser(String id) {
+        keycloakClient.getUsersResource().delete(id);
+    }
+
+    @Override
     public AccessTokenResponse getAccessToken(LoginDto loginDto) {
         Keycloak keycloak = keycloakClient.getClient(loginDto.getUserName(), loginDto.getPassword());
         return keycloak.tokenManager().getAccessToken();

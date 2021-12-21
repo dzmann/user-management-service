@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.ws.rs.NotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +25,12 @@ public class UserManagementExceptionHandler extends ResponseEntityExceptionHandl
         final ErrorResponse body = userManagementException.getErrorResponse();
         final HttpStatus httpStatus = userManagementException.getStatusCode();
         return new ResponseEntity(body, httpStatus);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    protected ResponseEntity<Object> handleNotFoundException(NotFoundException notFoundException) {
+        final ErrorResponse body = new ErrorResponse(notFoundException.getMessage());
+        return new ResponseEntity(body, HttpStatus.NOT_FOUND);
     }
 
     @Override

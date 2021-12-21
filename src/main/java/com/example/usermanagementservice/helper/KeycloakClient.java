@@ -7,6 +7,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,10 @@ import javax.ws.rs.NotAuthorizedException;
 public class KeycloakClient {
 
     private final KeycloakCustomProperties properties;
+
+    public UsersResource getUsersResource() {
+        return getRealmResource().users();
+    }
 
     public RealmResource getRealmResource() {
         Keycloak keycloak = getClient(properties.getUserName(), properties.getPassword());
