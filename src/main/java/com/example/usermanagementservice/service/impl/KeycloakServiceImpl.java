@@ -3,7 +3,7 @@ package com.example.usermanagementservice.service.impl;
 import com.example.usermanagementservice.dto.LoginDto;
 import com.example.usermanagementservice.exception.ErrorResponse;
 import com.example.usermanagementservice.exception.UserManagementException;
-import com.example.usermanagementservice.helper.KeycloakClientHelper;
+import com.example.usermanagementservice.helper.KeycloakClient;
 import com.example.usermanagementservice.service.KeycloakService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
@@ -31,10 +30,10 @@ import java.util.List;
 public class KeycloakServiceImpl implements KeycloakService {
 
     @Autowired
-    private KeycloakClientHelper keycloakClientHelper;
+    private KeycloakClient keycloakClient;
 
     public UserRepresentation findById(String username) {
-        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        RealmResource realmResource = keycloakClient.getRealmResource();
         List<UserRepresentation> found = realmResource.users().search(username);
         if(found.isEmpty()) {
             throw new UserManagementException("User not found", HttpStatus.NOT_FOUND);
@@ -43,7 +42,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     public UserRepresentation createNewUser(UserRepresentation userRepresentation) {
-        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        RealmResource realmResource = keycloakClient.getRealmResource();
         UsersResource usersResource = realmResource.users();
         fillWithData(userRepresentation);
         Response response = usersResource.create(userRepresentation);
@@ -61,12 +60,12 @@ public class KeycloakServiceImpl implements KeycloakService {
 
     public void deleteUser(String username) {
         UserRepresentation userRepresentation = findById(username);
-        RealmResource realmResource = keycloakClientHelper.getRealmResource();
+        RealmResource realmResource = keycloakClient.getRealmResource();
         realmResource.users().delete(userRepresentation.getId());
     }
 
     public AccessTokenResponse getAccessToken(LoginDto loginDto) {
-        Keycloak keycloak = keycloakClientHelper.getClient(loginDto.getUserName(), loginDto.getPassword());
+        Keycloak keycloak = keycloakClient.getClient(loginDto.getUserName(), loginDto.getPassword());
         return keycloak.tokenManager().getAccessToken();
     }
 
@@ -85,7 +84,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     private void addRole(UserResource userResource) {
-        RoleRepresentation userRole = keycloakClientHelper.getRealmResource()
+        RoleRepresentation userRole = keycloakClient.getRealmResource()
                 .roles()
                 .get("user")
                 .toRepresentation();

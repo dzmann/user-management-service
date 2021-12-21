@@ -14,7 +14,7 @@ import javax.ws.rs.NotAuthorizedException;
 
 @Component
 @AllArgsConstructor
-public class KeycloakClientHelper {
+public class KeycloakClient {
 
     private final KeycloakCustomProperties properties;
 
