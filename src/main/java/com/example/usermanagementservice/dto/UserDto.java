@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 public class UserDto {
 
     private String id;
-
     @NotNull
     @Length(min = 2, max = 20, message = ConstraintUtils.USERNAME_MESSAGE)
     private String userName;
@@ -30,7 +29,6 @@ public class UserDto {
     @NotNull
     @Length(min = 2, max = 20, message = ConstraintUtils.PASSWORD_MESSAGE)
     private String password;
-
     private DetailsDto details;
 
 }

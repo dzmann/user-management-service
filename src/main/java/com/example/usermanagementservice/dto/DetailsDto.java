@@ -12,13 +12,9 @@ import lombok.NoArgsConstructor;
 public class DetailsDto {
 
     private String phone;
-
     private String country;
-
     private String city;
-
     private String address;
-
     private String note;
 
 }
