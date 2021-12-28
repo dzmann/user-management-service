@@ -1,26 +1,16 @@
 server:
   port: 8084
 
-keycloak:
-  auth-server-url: https://lit-river-00704.herokuapp.com/auth
-  realm: agencia
-  resource: user-management-service
-  public-client: true
-  credentials:
-    secret: ENC(ZCu2H/uKLKSW/KfPYJG5wL6sgsR7r/JRC7pramn0IIq7bCE0LZfSRywwx5ejeRdG6daeqqifGdKScftHIFiF/cRT23BoB0On32dkeN4rUnU=)
-  bearer-only: true
-
-
-custom:
-  keycloak:
-    rest:
-      client:
-        serverUrl: "https://lit-river-00704.herokuapp.com/auth"
-        realm: "agencia"
-        clientId: "agencia"
-        clientSecret: ENC(ZCu2H/uKLKSW/KfPYJG5wL6sgsR7r/JRC7pramn0IIq7bCE0LZfSRywwx5ejeRdG6daeqqifGdKScftHIFiF/cRT23BoB0On32dkeN4rUnU=)
-        userName: "danilo"
-        password: ENC(H34eUlb4izUbQ9Wf30FKQ1Po4AhNhVKPcahQ4abySstBZ72O4wnt/NRAXF6JwAyu)
+spring:
+  application:
+    name: user-management-service
+  profiles:
+    active: dev
+  cloud:
+    config:
+      enabled: true
+  config:
+    import: optional:configserver:http://localhost:8085
 
 
 
