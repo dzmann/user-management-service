@@ -10,7 +10,7 @@ spring:
     config:
       enabled: true
   config:
-    import: optional:configserver:http://localhost:8085
+    import: optional:configserver:https://agencia-config-server.herokuapp.com
 
 
 
